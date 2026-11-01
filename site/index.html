@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="description" content="A 2026 pilot recap from recorded Starship sink and combat announcements.">
+    <title>Pilot Recap 2026</title>
+    <link rel="stylesheet" href="./css/styles.css?v=ground-cleanup-1">
+    <script type="module" src="./js/app.js"></script>
+  </head>
+  <body>
+    <header class="topline">
+      <a class="wordmark" href="#top" aria-label="Pilot Recap home">FLIGHT LOG <span>26</span></a>
+      <p>ANNUAL FIELD RECORD <span class="topline-mark" aria-hidden="true">+</span> 2026</p>
+    </header>
+
+    <main id="top">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> YEAR IN REVIEW / 2026</p>
+          <h1 id="page-title">YOUR YEAR<br><span>IN FLIGHT.</span></h1>
+          <p class="intro-lede">Every recorded skirmish leaves a trace. Find yours.</p>
+        </div>
+
+        <form id="lookup-form" class="lookup-form">
+          <label for="pilot-input">IN-GAME PILOT NAME</label>
+          <div class="lookup-row">
+            <input id="pilot-input" name="pilot" type="search" autocomplete="off" placeholder="Enter pilot name" required>
+            <button type="submit" disabled>Open recap <span aria-hidden="true">&#8594;</span></button>
+          </div>
+          <p class="lookup-note">Use the name shown in the game announcements.</p>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+        </form>
+        <span class="orbit-mark" aria-hidden="true">26<br><i>°</i></span>
+      </section>
+
+      <section id="results" class="results" aria-labelledby="pilot-name" hidden>
+        <div class="pilot-heading">
+          <div>
+            <p class="eyebrow">PILOT RECORD / 2026</p>
+            <h2 id="pilot-name"></h2>
+          </div>
+          <button id="new-search" class="text-button" type="button"><span aria-hidden="true">&#8634;</span> Another pilot</button>
+        </div>
+
+        <div id="summary-stats" class="summary-stats" aria-label="Year summary"></div>
+
+        <section class="best-ship" aria-labelledby="best-ship-title">
+          <div class="best-ship-label">
+            <p class="eyebrow">THE SHIP THAT SHOWED UP</p>
+            <h3 id="best-ship-title">Best ship</h3>
+          </div>
+          <div class="best-ship-name">
+            <p id="best-ship-type" class="ship-type"></p>
+            <p id="best-ship-name">No player-versus-player sinks recorded</p>
+          </div>
+          <div id="best-ship-stats" class="best-ship-stats"></div>
+        </section>
+
+        <div class="section-heading">
+          <p class="eyebrow">THE STATUS REPORT</p>
+          <h2>Ships in the story</h2>
+        </div>
+        <section class="ship-type-breakdown" aria-label="Ship type breakdown">
+          <div id="ship-type-labels" class="ship-type-labels">
+            <button type="button" class="ship-type-sort" data-sort-key="sunkBlocks" aria-pressed="false">Blocks sunk while piloting</button>
+            <button type="button" class="ship-type-sort" data-sort-key="type" aria-pressed="false">Ship type</button>
+            <button type="button" class="ship-type-sort" data-sort-key="lostBlocks" aria-pressed="false">Blocks lost while piloting</button>
+          </div>
+          <ol id="ship-type-list" class="ship-type-list"></ol>
+        </section>
+        <div class="ship-grid">
+          <section class="data-section" aria-labelledby="killed-title">
+            <div class="section-title-row">
+              <div><p class="eyebrow">OUTBOUND KILL LOG</p><h3 id="killed-title">Who you killed</h3></div>
+            </div>
+            <div id="killed-table"></div>
+          </section>
+          <section class="data-section" aria-labelledby="killed-by-title">
+            <div class="section-title-row">
+              <div><p class="eyebrow">INBOUND KILL LOG</p><h3 id="killed-by-title">Who killed you</h3></div>
+            </div>
+            <div id="killed-by-table"></div>
+          </section>
+        </div>
+
+        <div class="section-heading progression-heading">
+          <p class="eyebrow">THE LONG GAME</p>
+          <h2>Level by level</h2>
+        </div>
+        <section class="progression-section" aria-labelledby="level-chart-title">
+          <div class="section-title-row"><div><p class="eyebrow">LEVEL PROGRESSION</p><h3 id="level-chart-title">Daily level gains</h3></div><p id="level-total" class="section-total"></p></div>
+          <div id="level-calendar" class="level-calendar" aria-label="2026 calendar heatmap of measured levels gained"></div>
+          <div class="calendar-legend" aria-label="Percentile ranking of positive daily level gains">
+            <span class="legend-entry"><i class="tier-gold"></i>Rank #1</span>
+            <span class="legend-entry"><i class="tier-pink"></i>Top 1%</span>
+            <span class="legend-entry"><i class="tier-orange"></i>Top 5%</span>
+            <span class="legend-entry"><i class="tier-purple"></i>Top 25%</span>
+            <span class="legend-entry"><i class="tier-blue"></i>Top 50%</span>
+            <span class="legend-entry"><i class="tier-green"></i>Top 75%</span>
+            <span class="legend-entry"><i class="tier-gray"></i>Bottom 25%</span>
+          </div>
+        </section>
+
+        <div class="section-heading progression-heading">
+          <p class="eyebrow">A NEW DAY</p>
+          <h2>Best and worst day</h2>
+        </div>
+        <section id="ship-day-highlights" class="ship-day-grid" aria-label="Best and worst day by ship blocks"></section>
+
+        <div class="section-heading ground-heading">
+          <p class="eyebrow">ON THE GROUND</p>
+          <h2>Close encounters</h2>
+        </div>
+        <section class="ground-section" aria-labelledby="ground-title">
+          <div class="ground-summary">
+            <div><p class="eyebrow">GROUND PvP</p><h3 id="ground-title">Out of the cockpit</h3></div>
+            <div id="ground-stats" class="ground-stats"></div>
+          </div>
+          <div class="ship-grid ground-grid">
+            <div><p class="eyebrow">OPPONENTS</p><div id="ground-opponents"></div></div>
+            <div><p class="eyebrow">WEAPONS</p><div id="ground-weapons"></div></div>
+          </div>
+        </section>
+
+        <section class="additional-stats" aria-labelledby="additional-stats-title">
+          <div class="section-heading">
+            <p class="eyebrow">SUPPLEMENTAL RECORD</p>
+            <h2 id="additional-stats-title">Additional stats</h2>
+          </div>
+          <section class="yapper-card" aria-labelledby="yapper-title">
+            <div>
+              <p class="eyebrow">RELAYED IN-GAME CHAT / 2026</p>
+              <h3 id="yapper-title">Yapper percentile</h3>
+              <p class="yapper-description">Messages sent in-game and relayed by the bot, compared across pilots.</p>
+            </div>
+            <div class="yapper-result">
+              <strong id="yapper-count"></strong>
+              <span id="yapper-percentile"></span>
+              <small id="yapper-standing"></small>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>Recorded announcements only. Coverage is limited to parseable events in the archived 2026 channel export. Data may be stale after <time id="data-stale-after">the archived cutoff</time>.</p>
+      <p>This page and its bundled pilot stats are public. Ship icons: <a href="https://github.com/HorizonsEndMC/ResourcePack">Horizon's End Resource Pack</a>, licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+﻿{
+  "name": "pilot-recap",
+  "version": "1.0.0",
+  "private": true,
+  "license": "CC-BY-SA-4.0",
+  "description": "Static Pilot Recap 2026 page for GitHub Pages.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check:data": "node scripts/check-data.js",
+    "serve": "node scripts/serve.js"
+  }
+}
+
