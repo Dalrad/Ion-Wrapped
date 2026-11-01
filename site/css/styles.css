@@ -167,7 +167,7 @@ h1 span { color: var(--blue); }
 .best-ship-name { min-width: 0; padding-left: 25px; border-left: 1px solid var(--line); }
 .ship-type { margin-bottom: 3px; color: var(--lime); font-family: var(--display); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .best-ship-name > p:last-child { margin: 0; overflow-wrap: anywhere; font-family: var(--display); font-size: 30px; font-weight: 900; line-height: 1.05; }
-.best-ship-stats { display: grid; grid-template-columns: auto repeat(3, minmax(72px, 1fr)); align-items: stretch; }
+.best-ship-stats { display: grid; grid-template-columns: auto repeat(3, minmax(72px, 1fr)); align-items: stretch; column-gap: 10px; }
 .best-ship-stats .summary-stat { min-height: auto; padding: 0 12px; border-right: 0; border-left: 1px solid var(--line); }
 .best-ship-stats .summary-stat:first-child { padding-left: 17px; padding-right: 17px; }
 /* Count cells: header pinned to the top, value centered in the remaining space. */
@@ -179,9 +179,11 @@ h1 span { color: var(--blue); }
   text-align: center;
 }
 .best-ship-stats .summary-stat:nth-child(n + 2) .eyebrow { align-self: start; max-width: none; min-height: 2lh; }
+.best-ship-stats .summary-stat:nth-child(n + 2) { padding: 10px 6px; border: 1px solid var(--line); justify-items: stretch; }
 .best-ship-stats .eyebrow { max-width: 90px; margin-bottom: 3px; font-size: 10px; }
 .best-ship-stats strong { color: var(--lime); font-size: 25px; }
 .best-ship-stats strong[class*="tier-"] { font-size: 31px; }
+.best-ship-stats .summary-stat:nth-child(n + 2) strong { font-size: clamp(14px, 1.8vw, 18px); }
 
 .summary-stats .summary-stat small { display: block; margin-top: 5px; font-family: var(--display); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; }
 .tier-gold { --rank-tier-color: #e5cc80; color: var(--rank-tier-color); }
@@ -336,8 +338,7 @@ h1 span { color: var(--blue); }
   .best-ship-stats { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; padding-top: 16px; border-top: 1px solid var(--line); }
   .best-ship-stats .summary-stat { min-height: 0; padding: 0 10px; }
   .best-ship-stats .summary-stat:first-child { grid-column: 1 / -1; padding-left: 0; border-left: 0; }
-  .best-ship-stats .summary-stat:nth-child(2) { border-left: 0; }
-  .best-ship-stats .summary-stat:nth-child(n + 2) { padding: 10px 6px; border: 1px solid var(--line); }
+  .best-ship-stats .summary-stat:nth-child(n + 2) strong { font-size: clamp(18px, 6vw, 25px); }
   .ship-day-grid { grid-template-columns: 1fr; gap: 16px; }
   .ship-grid { grid-template-columns: 1fr; gap: 20px; }
   .ship-type-labels, .ship-type-row { grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -372,6 +373,11 @@ h1 span { color: var(--blue); }
   .calendar-grid { gap: 2px; }
   .calendar-day { font-size: 10px; }
   .page-footer { flex-direction: column; gap: 7px; }
+}
+
+@media (min-width: 761px) and (max-width: 1000px) {
+  .best-ship { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 22px; }
+  .best-ship-stats { grid-column: 1 / -1; }
 }
 
 @media (max-width: 420px) {
