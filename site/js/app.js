@@ -185,7 +185,7 @@ function renderShipTypeRows() {
       button.setAttribute('aria-label', `Sort by ${button.textContent}, currently ${shipTypeSort.direction}ending. Click to reverse.`);
     } else {
       delete button.dataset.sortDirection;
-      button.removeAttribute('aria-label');
+      button.setAttribute('aria-label', button.textContent);
     }
   }
   if (!rows.length) {
