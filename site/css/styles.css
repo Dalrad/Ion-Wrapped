@@ -151,6 +151,7 @@ h1 span { color: var(--blue); }
 .text-button { padding: 10px 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; font-weight: 750; white-space: nowrap; }
 .text-button span { display: inline-block; margin-right: 5px; color: var(--blue); font-size: 20px; vertical-align: -1px; }
 .text-button:hover { color: var(--blue); }
+.pilot-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 24px; }
 
 .summary-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0 0 36px; border: 1px solid var(--line); background: var(--panel); }
 .summary-stat { min-height: 124px; padding: 23px 22px 19px; border-right: 1px solid var(--line); }

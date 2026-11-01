@@ -11,6 +11,7 @@ import {
 } from './ranking.js';
 import { peakShipDay } from './ship-days.js';
 import { buildBestShipClass, buildShipTypeBreakdown, shipTypeIcon, sortShipTypeBreakdown } from './ship-types.js';
+import { createShareCardBlob } from './share-image.js';
 
 const form = document.querySelector('#lookup-form');
 const input = document.querySelector('#pilot-input');
@@ -435,6 +436,63 @@ form.addEventListener('submit', (event) => {
   }
   status.textContent = '';
   renderPilot(pilot);
+});
+
+function readStat(element) {
+  const value = element.querySelector('strong');
+  const badge = element.querySelector('small');
+  return {
+    label: element.querySelector('.eyebrow').textContent,
+    value: value.textContent,
+    valueColor: getComputedStyle(value).color,
+    badge: badge?.textContent,
+    badgeColor: badge && getComputedStyle(badge).color,
+    detail: element.querySelector('span:not(.eyebrow)')?.textContent,
+  };
+}
+
+function readShareModel() {
+  const ratio = document.querySelector('#best-ship-ratio .summary-stat');
+  return {
+    name: document.getElementById('pilot-name').textContent,
+    summary: [...document.querySelectorAll('#summary-stats .summary-stat')].map(readStat),
+    bestClass: document.getElementById('best-ship-class').textContent,
+    ratio: ratio && readStat(ratio),
+    bestStats: [...document.querySelectorAll('#best-ship-stats .summary-stat')].map(readStat),
+  };
+}
+
+const shareButton = document.querySelector('#share-card');
+const shareLabel = shareButton.textContent;
+let shareReset = 0;
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${name}-pilot-recap-2026.png`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+shareButton.addEventListener('click', async () => {
+  const model = readShareModel();
+  const blobPromise = createShareCardBlob(model);
+  let message = 'Copied!';
+  try {
+    if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') throw new Error('Clipboard images are not supported.');
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
+  } catch {
+    try {
+      downloadBlob(await blobPromise, model.name.replace(/[^\w-]+/g, '_'));
+      message = 'Saved image';
+    } catch {
+      message = 'Failed';
+    }
+  }
+  shareButton.textContent = message;
+  window.clearTimeout(shareReset);
+  shareReset = window.setTimeout(() => { shareButton.textContent = shareLabel; }, 2000);
 });
 
 document.querySelector('#new-search').addEventListener('click', () => {

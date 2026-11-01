@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#1e1e1e">
     <meta name="description" content="A 2026 pilot recap from recorded Starship sink and combat announcements.">
     <title>Pilot Recap 2026</title>
-    <link rel="stylesheet" href="./css/styles.css?v=ship-stats-boxes-3">
-    <script type="module" src="./js/app.js?v=mobile-ship-metrics-1"></script>
+    <link rel="stylesheet" href="./css/styles.css?v=share-card-1">
+    <script type="module" src="./js/app.js?v=share-card-1"></script>
   </head>
   <body>
     <header class="topline">
@@ -41,7 +41,10 @@
             <p class="eyebrow">PILOT RECORD / 2026</p>
             <h2 id="pilot-name"></h2>
           </div>
-          <button id="new-search" class="text-button" type="button"><span aria-hidden="true">&#8634;</span> Another pilot</button>
+          <div class="pilot-actions">
+            <button id="share-card" class="text-button" type="button" aria-live="polite">Copy share image</button>
+            <button id="new-search" class="text-button" type="button"><span aria-hidden="true">&#8634;</span> Another pilot</button>
+          </div>
         </div>
 
         <div id="summary-stats" class="summary-stats" aria-label="Year summary"></div>
