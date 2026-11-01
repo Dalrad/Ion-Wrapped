@@ -1,4 +1,5 @@
 import { peakShipDay } from './ship-days.js';
+import { buildBestShipClass } from './ship-types.js';
 
 export const MIN_RATE_EVENTS = 5;
 
@@ -27,6 +28,34 @@ export function buildPeakShipDayRanking(pilots, recordKey) {
     const peak = peakShipDay(pilot[recordKey]?.byDay ?? []);
     return peak ? [peak.blocks] : [];
   }));
+}
+
+export function buildBestClassRankings(pilots) {
+  const pools = {
+    bestClassRatios: [],
+    bestClassFinalKills: [],
+    bestClassAssists: [],
+    bestClassSunkBlocks: [],
+    bestClassLostBlocks: [],
+  };
+  for (const pilot of pilots) {
+    const bestClass = buildBestShipClass(
+      pilot.shipsSunk?.byShip ?? [],
+      pilot.shipsUsed ?? [],
+      pilot.shipsLost?.byShip ?? [],
+    );
+    if (!bestClass) continue;
+    pools.bestClassFinalKills.push(bestClass.finalKills);
+    pools.bestClassAssists.push(bestClass.assists);
+    pools.bestClassSunkBlocks.push(bestClass.sunkBlocks);
+    pools.bestClassLostBlocks.push(bestClass.lostBlocks);
+    if (bestClass.finalKills + bestClass.assists + bestClass.deaths >= MIN_RATE_EVENTS) {
+      pools.bestClassRatios.push(killDeathRatio(bestClass));
+    }
+  }
+  return Object.fromEntries(
+    Object.entries(pools).map(([name, values]) => [name, createRanking(values)]),
+  );
 }
 
 export function dailyLevelGains(events) {
@@ -65,4 +94,9 @@ export function rankOf(sortedValues, value) {
   const tier = TIERS.find((candidate) => top <= candidate.maxTop)?.name ?? 'gray';
   const label = tier === 'gray' ? 'BOTTOM 25%' : `TOP ${Math.max(1, Math.ceil(top * 100))}%`;
   return { tier, rank, total, label };
+}
+
+export function rankOfBestClassMetric(sortedValues, value) {
+  const rank = rankOf(sortedValues, value);
+  return value === 0 && rank ? { ...rank, tier: 'gray', label: 'TOP 0%' } : rank;
 }

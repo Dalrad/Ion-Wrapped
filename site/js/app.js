@@ -1,21 +1,23 @@
 import {
   MIN_RATE_EVENTS,
+  buildBestClassRankings,
   buildChatMessageRanking,
   buildPeakShipDayRanking,
   createRanking,
   dailyLevelGains,
   killDeathRatio,
+  rankOfBestClassMetric,
   rankOf,
 } from './ranking.js';
 import { peakShipDay } from './ship-days.js';
-import { buildShipTypeBreakdown, shipTypeIcon, sortShipTypeBreakdown } from './ship-types.js';
+import { buildBestShipClass, buildShipTypeBreakdown, shipTypeIcon, sortShipTypeBreakdown } from './ship-types.js';
 
 const form = document.querySelector('#lookup-form');
 const input = document.querySelector('#pilot-input');
 const status = document.querySelector('#status');
 const results = document.querySelector('#results');
 let pilots = new Map();
-let rankings = { combinedSinks: [], blocksFromSinks: [], groundKills: [], shipRatios: [], levelGains: [], chatMessages: [], bestDayBlocks: [], worstDayBlocks: [] };
+let rankings = { combinedSinks: [], blocksFromSinks: [], groundKills: [], levelGains: [], chatMessages: [], bestClassRatios: [], bestClassFinalKills: [], bestClassAssists: [], bestClassSunkBlocks: [], bestClassLostBlocks: [], bestDayBlocks: [], worstDayBlocks: [] };
 let shipTypeRows = [];
 let shipTypeSort = null;
 
@@ -44,18 +46,16 @@ function combinedSinksOf(pilot) {
 }
 
 function buildRankings(list) {
-  const pools = { combinedSinks: [], blocksFromSinks: [], groundKills: [], shipRatios: [], levelGains: [] };
+  const pools = { combinedSinks: [], blocksFromSinks: [], groundKills: [], levelGains: [] };
   for (const pilot of list) {
     if (combinedSinksOf(pilot) > 0) pools.combinedSinks.push(combinedSinksOf(pilot));
     if (pilot.shipsSunk.blocks > 0) pools.blocksFromSinks.push(pilot.shipsSunk.blocks);
     if (pilot.groundPvP.kills > 0) pools.groundKills.push(pilot.groundPvP.kills);
     pools.levelGains.push(...dailyLevelGains(pilot.levels).values());
-    for (const ship of pilot.shipsUsed) {
-      if (ship.kills + ship.deaths >= MIN_RATE_EVENTS) pools.shipRatios.push(killDeathRatio(ship));
-    }
   }
   const rankedPools = Object.fromEntries(Object.entries(pools).map(([name, values]) => [name, createRanking(values)]));
   rankedPools.chatMessages = buildChatMessageRanking(list);
+  Object.assign(rankedPools, buildBestClassRankings(list));
   rankedPools.bestDayBlocks = buildPeakShipDayRanking(list, 'shipsSunk');
   rankedPools.worstDayBlocks = buildPeakShipDayRanking(list, 'shipsLost');
   return rankedPools;
@@ -382,24 +382,36 @@ function renderPilot(pilot) {
     ? `Rank ${formatNumber(chatRank.rank)} of ${formatNumber(chatRank.total)} pilots`
     : 'No relayed in-game messages recorded.';
 
-  const best = pilot.bestShip;
-  document.getElementById('best-ship-type').textContent = best?.type ?? 'NO PLAYER SINKS';
-  document.getElementById('best-ship-name').textContent = best?.name ?? 'NO PLAYER SINKS RECORDED';
+  const best = buildBestShipClass(
+    pilot.shipsSunk.byShip,
+    pilot.shipsUsed,
+    pilot.shipsLost.byShip,
+  );
+  document.getElementById('best-ship-class').textContent = best?.type ?? 'NO PLAYER SINKS RECORDED';
+  const bestRatio = document.getElementById('best-ship-ratio');
   const bestStats = document.getElementById('best-ship-stats');
+  bestRatio.replaceChildren();
   bestStats.replaceChildren();
   if (best) {
+    const killsAndAssists = best.finalKills + best.assists;
     const ratio = killDeathRatio(best);
-    const ranked = best.kills + best.deaths >= MIN_RATE_EVENTS;
-    bestStats.append(
+    const ranked = killsAndAssists + best.deaths >= MIN_RATE_EVENTS;
+    const ratioLabel = best.deaths === 0
+      ? killsAndAssists > 0 ? 'Perfect' : 'No deaths'
+      : `${ratio.toFixed(2)}:1`;
+    bestRatio.append(
       renderStat(
         'K+A / DEATH',
-        best.deaths === 0 ? 'Perfect' : `${ratio.toFixed(2)}:1`,
-        `${formatNumber(best.kills)} kills & assists / ${formatNumber(best.deaths)} deaths${ranked ? '' : ' (too few events to rank)'}`,
-        ranked ? rankOf(rankings.shipRatios, ratio) : null,
+        ratioLabel,
+        `${formatNumber(killsAndAssists)} kills & assists / ${formatNumber(best.deaths)} deaths while piloting this class${ranked ? '' : ' (too few events to rank)'}`,
+        ranked ? rankOf(rankings.bestClassRatios, ratio) : null,
       ),
-      renderStat('FINAL KILLS', best.finalKills),
-      renderStat('ASSISTS', best.assists),
-      renderStat('VICTIM BLOCKS SUNK', best.victimBlocks),
+    );
+    bestStats.append(
+      renderStat('FINAL KILLS', best.finalKills, null, rankOfBestClassMetric(rankings.bestClassFinalKills, best.finalKills)),
+      renderStat('ASSISTS', best.assists, null, rankOfBestClassMetric(rankings.bestClassAssists, best.assists)),
+      renderStat('BLOCKS SUNK', best.sunkBlocks, null, rankOfBestClassMetric(rankings.bestClassSunkBlocks, best.sunkBlocks)),
+      renderStat('BLOCKS LOST', best.lostBlocks, null, rankOfBestClassMetric(rankings.bestClassLostBlocks, best.lostBlocks)),
     );
   }
 

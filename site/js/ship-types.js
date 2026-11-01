@@ -110,3 +110,36 @@ export function buildShipTypeBreakdown(sunkShips = [], lostShips = []) {
     maxSizeOf(left.type) - maxSizeOf(right.type)
     || left.type.localeCompare(right.type, 'en-US'));
 }
+
+export function buildBestShipClass(sunkShips = [], usedShips = [], lostShips = []) {
+  const totals = new Map();
+  const totalFor = (ship) => {
+    const type = ship.type?.trim() || 'Unknown type';
+    const key = type.toLocaleLowerCase('en-US');
+    let total = totals.get(key);
+    if (!total) {
+      total = { type, sunkBlocks: 0, finalKills: 0, assists: 0, deaths: 0, lostBlocks: 0 };
+      totals.set(key, total);
+    }
+    return total;
+  };
+  const addNumber = (total, key, value) => {
+    const number = Number(value ?? 0);
+    if (Number.isFinite(number)) total[key] += number;
+  };
+
+  for (const ship of sunkShips) addNumber(totalFor(ship), 'sunkBlocks', ship.blocks);
+  for (const ship of usedShips) {
+    const total = totalFor(ship);
+    addNumber(total, 'finalKills', ship.finalKills);
+    addNumber(total, 'assists', ship.assists);
+    addNumber(total, 'deaths', ship.deaths);
+  }
+  for (const ship of lostShips) addNumber(totalFor(ship), 'lostBlocks', ship.blocks);
+
+  return [...totals.values()]
+    .filter((total) => total.sunkBlocks > 0)
+    .sort((left, right) =>
+      right.sunkBlocks - left.sunkBlocks
+      || left.type.localeCompare(right.type, 'en-US'))[0] ?? null;
+}

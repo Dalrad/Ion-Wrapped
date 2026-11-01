@@ -20,6 +20,10 @@ html { scroll-behavior: smooth; }
 body {
   position: relative;
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   color: var(--ink);
   background-color: var(--paper);
@@ -86,6 +90,8 @@ button, input { font: inherit; }
 canvas { display: block; max-width: 100%; }
 
 .topline, main, .page-footer { width: min(1120px, calc(100% - 64px)); margin-inline: auto; }
+
+main { flex: 1; }
 
 .topline {
   min-height: 72px;
@@ -161,29 +167,33 @@ h1 span { color: var(--blue); }
 .yapper-result strong { display: block; color: var(--blue); font-family: var(--display); font-size: 39px; font-weight: 900; line-height: 1.1; }
 .yapper-result span, .yapper-result small { display: block; margin-top: 4px; font-family: var(--display); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; }
 .yapper-result small { color: var(--muted); font-family: inherit; font-weight: 400; letter-spacing: 0; }
-.best-ship { display: grid; grid-template-columns: 0.6fr 1fr 1.5fr; align-items: center; gap: 26px; min-height: 195px; margin-bottom: 72px; padding: 28px 32px; background: var(--deep); color: var(--ink); border-left: 3px solid var(--coral); }
+.best-ship { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 24px 32px; min-height: 195px; margin-bottom: 72px; padding: 28px 32px; background: var(--deep); color: var(--ink); border-left: 3px solid var(--coral); }
 .best-ship .eyebrow { color: #a0a0a0; }
 .best-ship-label h3 { margin: 0; font-family: var(--display); font-size: 27px; }
-.best-ship-name { min-width: 0; padding-left: 25px; border-left: 1px solid var(--line); }
-.ship-type { margin-bottom: 3px; color: var(--lime); font-family: var(--display); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-.best-ship-name > p:last-child { margin: 0; overflow-wrap: anywhere; font-family: var(--display); font-size: 30px; font-weight: 900; line-height: 1.05; }
-.best-ship-stats { display: grid; grid-template-columns: auto repeat(3, minmax(72px, 1fr)); align-items: stretch; column-gap: 10px; }
-.best-ship-stats .summary-stat { min-height: auto; padding: 0 12px; border-right: 0; border-left: 1px solid var(--line); }
-.best-ship-stats .summary-stat:first-child { padding-left: 17px; padding-right: 17px; }
+.best-ship-overview { min-width: 0; }
+.best-ship-class { min-width: 0; margin-top: 8px; }
+.best-ship-class .ship-type { margin: 0; color: var(--lime); font-family: var(--display); font-size: 30px; font-weight: 900; line-height: 1.05; overflow-wrap: anywhere; text-transform: uppercase; }
+.best-ship-ratio { min-width: 0; padding-left: 24px; border-left: 1px solid var(--line); }
+.best-ship-ratio .summary-stat { min-height: 0; padding: 0; border: 0; }
+.best-ship-ratio .summary-stat strong { font-size: 30px; }
+.best-ship-stats { display: grid; min-width: 0; grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line); }
 /* Count cells: header pinned to the top, value centered in the remaining space. */
-.best-ship-stats .summary-stat:nth-child(n + 2) {
+.best-ship-stats .summary-stat {
   display: grid;
   grid-template-rows: auto 1fr;
   justify-items: center;
   align-items: center;
   text-align: center;
+  min-width: 0;
+  min-height: auto;
+  padding: 10px 6px;
+  border: 1px solid var(--line);
 }
-.best-ship-stats .summary-stat:nth-child(n + 2) .eyebrow { align-self: start; max-width: none; min-height: 2lh; }
-.best-ship-stats .summary-stat:nth-child(n + 2) { padding: 10px 6px; border: 1px solid var(--line); justify-items: stretch; }
-.best-ship-stats .eyebrow { max-width: 90px; margin-bottom: 3px; font-size: 10px; }
+.best-ship-stats .summary-stat .eyebrow { align-self: start; max-width: none; min-height: 2lh; }
+.best-ship-stats .eyebrow { max-width: 90px; margin-bottom: 3px; color: var(--ink); font-size: 11px; font-weight: 900; }
 .best-ship-stats strong { color: var(--lime); font-size: 25px; }
 .best-ship-stats strong[class*="tier-"] { font-size: 31px; }
-.best-ship-stats .summary-stat:nth-child(n + 2) strong { font-size: clamp(14px, 1.8vw, 18px); }
+.best-ship-stats .summary-stat strong { overflow-wrap: anywhere; font-size: clamp(12px, 1.3vw, 16px); }
 
 .summary-stats .summary-stat small { display: block; margin-top: 5px; font-family: var(--display); font-size: 11px; font-weight: 900; letter-spacing: 0.06em; }
 .tier-gold { --rank-tier-color: #e5cc80; color: var(--rank-tier-color); }
@@ -333,12 +343,11 @@ h1 span { color: var(--blue); }
   .yapper-card { grid-template-columns: 1fr; gap: 16px; padding: 20px 19px; }
   .yapper-result { min-width: 0; text-align: left; }
   .best-ship { grid-template-columns: minmax(0, 1fr); gap: 17px; margin-bottom: 52px; padding: 23px 19px; }
-  .best-ship-name { padding-left: 0; border-left: 0; }
-  .best-ship-name > p:last-child { font-size: 24px; }
-  .best-ship-stats { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .best-ship-stats .summary-stat { min-height: 0; padding: 0 10px; }
-  .best-ship-stats .summary-stat:first-child { grid-column: 1 / -1; padding-left: 0; border-left: 0; }
-  .best-ship-stats .summary-stat:nth-child(n + 2) strong { font-size: clamp(18px, 6vw, 25px); }
+  .best-ship-class .ship-type { font-size: 24px; }
+  .best-ship-ratio { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--line); }
+  .best-ship-stats { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .best-ship-stats .summary-stat { min-height: 0; padding: 10px 6px; }
+  .best-ship-stats .summary-stat strong { font-size: clamp(18px, 6vw, 25px); }
   .ship-day-grid { grid-template-columns: 1fr; gap: 16px; }
   .ship-grid { grid-template-columns: 1fr; gap: 20px; }
   .ship-type-labels, .ship-type-row { grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -376,8 +385,7 @@ h1 span { color: var(--blue); }
 }
 
 @media (min-width: 761px) and (max-width: 1000px) {
-  .best-ship { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 22px; }
-  .best-ship-stats { grid-column: 1 / -1; }
+  .best-ship { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 }
 
 @media (max-width: 420px) {
